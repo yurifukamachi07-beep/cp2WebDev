@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Teste Cifra de Vigenère</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #fafafa;
+      color: #333;
+      padding: 20px;
+    }
+    h2 {
+      color: #4a148c;
+    }
+    textarea, input, select {
+      margin: 5px;
+      padding: 5px;
+      border-radius: 6px;
+      border: 1px solid #aaa;
+    }
+    button {
+      background: #4a148c;
+      color: white;
+      border: none;
+      padding: 6px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #6a1b9a;
+    }
+    #resultado {
+      margin-top: 15px;
+      font-weight: bold;
+      color: #2e7d32;
+    }
+  </style>
+</head>
+<body>
+  <h2>Cifra de Vigenère 🔐</h2>
+
+  <label>Mensagem:</label><br>
+  <textarea id="mensagem" rows="3" cols="30">olá</textarea><br>
+
+  <label>Palavra-chave:</label>
+  <input type="text" id="chave" value="limao">
+
+  <label>Modo:</label>
+  <select id="modo">
+    <option value="codificar">Codificar</option>
+    <option value="decodificar">Decodificar</option>
+  </select>
+
+  <button onclick="executar()">Executar</button>
+
+  <p id="resultado">O resultado aparecerá aqui...</p>
+
+  <script>
+    function cifrarVigenere(mensagem, palavraChave, modo = 'codificar') {
+      let resultado = '';
+      let chaveIndex = 0;
+
+      for (let i = 0; i < mensagem.length; i++) {
+        let char = mensagem[i];
+        let codigo = mensagem.charCodeAt(i);
+        let letraBase;
+
+        if (codigo >= 65 && codigo <= 90) letraBase = 65;
+        else if (codigo >= 97 && codigo <= 122) letraBase = 97;
+        else {
+          resultado += char;
+          continue;
+        }
+
+        let letraMensagem = codigo - letraBase;
+        let codigoChave = palavraChave.charCodeAt(chaveIndex % palavraChave.length);
+        if (codigoChave >= 65 && codigoChave <= 90) codigoChave += 32;
+
+        let letraChave = codigoChave - 97;
+        let deslocamento = (modo === 'codificar')
+          ? (letraMensagem + letraChave) % 26
+          : (letraMensagem - letraChave + 26) % 26;
+
+        let novaLetra = String.fromCharCode(letraBase + deslocamento);
+        resultado += novaLetra;
+
+        console.log(`Letra: ${char}, Chave: ${palavraChave[chaveIndex % palavraChave.length]}, Nova: ${novaLetra}`);
+        chaveIndex++;
+      }
+
+      return resultado;
+    }
+
+    function executar() {
+      const mensagem = document.getElementById('mensagem').value;
+      const chave = document.getElementById('chave').value;
+      const modo = document.getElementById('modo').value;
+
+      const resultado = cifrarVigenere(mensagem, chave, modo);
+      document.getElementById('resultado').innerText = `Resultado: ${resultado}`;
+    }
+  </script>
+
+  <!-- essa parte foi usado ia apenas para criar uma interface para testar o código -->
+</body>
+</html>
